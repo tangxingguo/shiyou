@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+function getUrl(fil, id) {
+    var Cnv = document.getElementById('myCanvas');
+    var Cntx = Cnv.getContext('2d');//获取2d编辑容器
+    var imgss =   new Image(); //创建一个图片
+    var agoimg=document.getElementById("ago");
+    for (var intI = 0; intI < fil.length; intI++) { //图片回显
+        var tmpFile = fil[intI];
+        var reader = new FileReader();
+        reader.readAsDataURL(tmpFile);
+        reader.onload = function (e) {
+            url = e.target.result;
+            imgss.src = url;
+            agoimg.src=url;
+            agoimg.onload = function () {
+                //等比缩放
+                var m = imgss.width / imgss.height;
+                 Cnv.height =300;//该值影响缩放后图片的大小
+                 Cnv.width= 300*m ;
+                //img放入画布中
+                //设置起始坐标，结束坐标
+                Cntx.drawImage(agoimg, 0, 0,300*m,300);
+            }
+        }
+    }
+}
+
+
+function  pressss(){//
+    //获取canvas压缩后的图片数据
+    var Pic = document.getElementById("myCanvas").toDataURL("image/png");
+    var imgs =document.getElementById("press");
+    imgs.src =Pic ;
+    //上传
+    // 去除多余，得到base64编码的图片字节流
+    Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+    //可以用ajax提交到后台，提交后可以直接存数据库，也可以保存成图片，此处略。
+
+
+}
+
+</script>
+</head>
+<body>
+<input type="file" id="fileId" name="fileId" value="上传图片"
+       hidefocus="true" onchange="getUrl(this.files,this.id);"/>
+<canvas id="myCanvas"     style="display: none" ></canvas>
+old img-><img src="" alt="" id="ago" style="width: 500px;"/>
+<input type="button" value="ya suo->" onclick="pressss()" />
+new img-><img src="" alt="" id="press"/>
+</body>
+</html>
